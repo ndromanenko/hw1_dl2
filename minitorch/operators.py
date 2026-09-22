@@ -117,7 +117,7 @@ def log_back(x: float, d: float) -> float:
 def inv(x: float) -> float:
     "$f(x) = 1/x$"
     # TODO: Implement for Task 0.1.
-    return 1.0 / (x + EPS)
+    return 1.0 / x
     # raise NotImplementedError('Need to implement for Task 0.1')
 
 

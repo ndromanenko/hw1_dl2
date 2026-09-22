@@ -125,7 +125,7 @@ class Sigmoid(Function):
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
         # TODO: Implement for Task 2.4.
         (out,) = ctx.saved_values
-        return grad_output * out * (1.0 - out)
+        return grad_output * (out - out * out)
         # raise NotImplementedError('Need to implement for Task 2.4')
 
 
