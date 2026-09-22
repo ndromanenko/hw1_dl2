@@ -22,8 +22,13 @@ def central_difference(f: Any, *vals: Any, arg: int = 0, epsilon: float = 1e-6) 
     Returns:
         An approximation of $f'_i(x_0, \ldots, x_{n-1})$
     """
+    vals_plus_e = list(vals)
+    vals_minus_e = list(vals)
+    vals_plus_e[arg] += epsilon
+    vals_minus_e[arg] -= epsilon
     # TODO: Implement for Task 1.1.
-    raise NotImplementedError('Need to implement for Task 1.1')
+    return (f(*vals_plus_e) - f(*vals_minus_e)) / (2 * epsilon)
+    # raise NotImplementedError('Need to implement for Task 1.1')
 
 
 variable_count = 1
@@ -61,8 +66,22 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
     Returns:
         Non-constant Variables in topological order starting from the right.
     """
+    visited = set()
+    order = []
+
+    def visit(node):
+        if node.unique_id in visited or node.is_constant():
+            return
+        visited.add(node.unique_id)
+
+        for parent in node.parents:
+            visit(parent)
+        order.append(node)
+    
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    visit(variable)
+    return reversed(order)
+    # raise NotImplementedError('Need to implement for Task 1.4')
 
 
 def backpropagate(variable: Variable, deriv: Any) -> None:
@@ -77,7 +96,16 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    order = topological_sort(variable)
+    grads = {variable.unique_id: deriv}
+    for node in order:
+        d = grads[node.unique_id]
+        if node.is_leaf():
+            node.accumulate_derivative(d)
+        else:
+            for parent, d_parent in node.chain_rule(d):
+                grads[parent.unique_id] = grads.get(parent.unique_id, 0.0) + d_parent
+    # raise NotImplementedError('Need to implement for Task 1.4')
 
 
 @dataclass
